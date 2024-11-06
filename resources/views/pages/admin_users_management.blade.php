@@ -41,18 +41,18 @@
               <tbody>
                 @foreach ($users as $per_user)
                 <tr>
-                  <td class="text-xs"><img class="w-10 rounded" src="../storage/{{$per_user->profile}}" alt="Profile Image" /></td>
-                  <td class="text-xs">{{ $per_user->firstname, $per_user->middlename, $per_user->lastname  }}</td>
-                  <td class="text-xs">{{ $per_user->email }}</td>
+                  <td class="text-xs font-weight-bold"><img class="avatar avatar-sm" src="../storage/{{$per_user->profile}}" alt="Profile Image" /></td>
+                  <td class="text-xs font-weight-bold">{{ $per_user->firstname, $per_user->middlename, $per_user->lastname  }}</td>
+                  <td class="text-xs font-weight-normal">{{ $per_user->email }}</td>
                   <td class="align-middle text-center text-xs">
                     <span class="badge badge-sm bg-gradient-{{ $per_user->status == 1 ? 'success' : 'danger' }}">
                         {{ $per_user->status == 1 ? 'Active' : 'Inactive' }}
                     </span>                    
                   </td>
-                  <td class="align-middle text-center text-xs"></td>
-                  <td class="align-middle text-center text-xs"></td>
-                  <td class="align-middle text-center text-xs">{{ $per_user->created_at->format('Y-m-d H:i:s') }}</td>
-                  <td class="align-middle text-center text-xs">{{ $per_user->updated_at->format('Y-m-d H:i:s') }}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_user->createdBy->firstname .' '. $per_user->createdBy->middlename .' '. $per_user->createdBy->lastname}}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_user->updatedBy->firstname .' '. $per_user->updatedBy->middlename .' '. $per_user->updatedBy->lastname}}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_user->created_at->format('Y-m-d H:i:s') }}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_user->updated_at->format('Y-m-d H:i:s') }}</td>
                   <td class="align-middle">
                     <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-bs-toggle="modal" data-bs-target="#modal_menu" onclick="modal_menu({{$per_user->id}})">
                       <i class="fas fa-ellipsis-h"></i>
@@ -316,12 +316,12 @@
                       : '<span class="badge badge-sm bg-gradient-danger">Inactive</span>';
 
                       const tr = '<tr>' +
-                        '<td class="text-xs"><img class="w-10 rounded" src="../storage/'+ row.profile +'" /></td>' +
+                        '<td class="text-xs"><img class="avatar avatar-sm" src="../storage/'+ row.profile +'" /></td>' +
                         '<td class="text-xs">' + row.firstname + ' ' + (row.middlename || '') + ' ' + row.lastname + '</td>' +
                         '<td class="text-xs">' + row.email + '</td>' +
                         '<td class="align-middle text-center text-xs">' + badgeStatus + '</td>' +
-                        '<td class="align-middle text-center text-xs">' + (row.additionalField1 || '') + '</td>' +
-                        '<td class="align-middle text-center text-xs">' + (row.additionalField2 || '') + '</td>' +
+                        '<td class="align-middle text-center text-xs">' + (row.createdBy || '') + '</td>' +
+                        '<td class="align-middle text-center text-xs">' + (row.updatedBy || '') + '</td>' +
                         '<td class="align-middle text-center text-xs">' + (row.created_date ? row.created_date : '') + '</td>' +
                         '<td class="align-middle text-center text-xs">' + (row.updated_date ? row.updated_date : '') + '</td>' +
                         '<td class="align-middle">' +

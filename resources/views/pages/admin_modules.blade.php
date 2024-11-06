@@ -40,8 +40,8 @@
               <tbody>
                 @foreach ($modules as $per_module)
                 <tr>
-                  <td class="text-xs"><i class="{{ $per_module->icon }}"></i></td>
-                  <td class="text-xs">{{ $per_module->module_name }}</td>
+                  <td class="text-xs font-weight-bold"><i class="{{ $per_module->icon }}"></i></td>
+                  <td class="text-xs font-weight-bold">{{ $per_module->module_name }}</td>
                   <td class="align-middle text-center text-xs">
                     @if($per_module->status == 1 )
                       <span class="badge badge-sm bg-gradient-success">Active</span>
@@ -49,12 +49,12 @@
                       <span class="badge badge-sm bg-gradient-danger">Inactive</span>
                     @endif
                   </td>
-                  <td class="align-middle text-center text-xs"></td>
-                  <td class="align-middle text-center text-xs"></td>
-                  <td class="align-middle text-center text-xs">{{ \Carbon\carbon::parse($per_module->created_at)->format('Y-m-d H:i:s') }}</td>
-                  <td class="align-middle text-center text-xs">{{ \Carbon\carbon::parse($per_module->updated_at)->format('Y-m-d H:i:s') }}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_module->createdBy->firstname .' '. $per_module->createdBy->middlename .' '. $per_module->createdBy->lastname}}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ $per_module->updatedBy->firstname .' '. $per_module->updatedBy->middlename .' '. $per_module->updatedBy->lastname}}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ \Carbon\carbon::parse($per_module->created_at)->format('Y-m-d H:i:s') }}</td>
+                  <td class="align-middle text-center text-xs font-weight-bold">{{ \Carbon\carbon::parse($per_module->updated_at)->format('Y-m-d H:i:s') }}</td>
                   <td class="align-middle">
-                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-bs-toggle="modal" data-bs-target="#modal_menu" onclick="modal_menu({{$per_module->id}})">
+                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-bs-toggle="modal" data-bs-target="#modal_menu" onclick="modal_menu(this)" data-id="{{ $per_module->id }}" data-module-name="{{ $per_module->module_name }}">
                       <i class="fas fa-ellipsis-h"></i>
                     </a>
                   </td>
@@ -103,26 +103,64 @@
       alert(id)
     }
 
-    function setModule(id){
-      alert(id)
+    function setModule(elements){
+      const id = elements.getAttribute("data-id");
+      const moduleName = elements.getAttribute("data-module-name");
+
+      $('#dynamicModal').modal('show');
+      $('#modal_menu').modal('hide');
+      $('#modalTitle').html(`<div class="text-light text-bold"><i class="fas fa-cogs"></i> Config ${moduleName}</div>`);
+        $('#modalBody').html(`
+            <form autocomplete="off">
+                <div class="form-group">
+                    <label for="module_name">Module Name</label>
+                    <input type="text" class="form-control" id="module_name" placeholder="Enter module name" autocomplete="off" value="${moduleName}" readonly>
+                </div>
+                <div class="from-group mb-3 mt-2">
+                    <label for="module_name">Module Permission</label>
+                    <select class="js-example-basic-multiple" name="roles[]" id="roles" multiple="multiple">
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn bg-gradient-secondary me-2" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn bg-gradient-success" data-id="${id}" id="savePermission">Save</button>
+                </div>
+            </form>`);
+
+            $('.js-example-basic-multiple').select2({
+                placeholder: "Select Roles",
+                width: "100%",
+                dropdownParent: $('#dynamicModal'),
+            });
+
+        const roles = {!! json_encode($roles) !!};
+        const allRoleIds = roles.map(item => item.id).join(',');
+        $('#roles').append(`<option value="all">All</option>`);
+          roles.forEach(function(item) {
+          $('#roles').append(`<option value="${item.id}">${item.name}</option>`);
+        });
+        
     }
 
-    function modal_menu(id){
+      function modal_menu(elements){
+        const id = elements.getAttribute("data-id");
+        const moduleName = elements.getAttribute("data-module-name");
+        
         $('#modal_body').html(`
-            <div class="row">
-              <div class="col-md-6">
-                <button onclick="viewModule(${id})" type="button" class="w-100 btn bg-gradient-success me-2"><i class="fas fa-file-alt"></i> View</button>
-              </div>
-              <div class="col-md-6">
-                <button onclick="editModule(${id})" type="button" class="w-100 btn bg-gradient-info me-2"><i class="fas fa-pen"></i> Edit</button>
-              </div>
-              <div class="col-md-6">
-                <button onclick="archiveModule(${id})" type="button" class="w-100 btn bg-gradient-danger me-2"><i class="fas fa-archive"></i> Archive</button>
-              </div>
-              <div class="col-md-6">
-                <button onclick="setModule(${id})" type="button" class="w-100 btn bg-gradient-secondary me-2"><i class="fas fa-key"></i> Settings</button>
-              </div>
-            </div>`);
+          <div class="row">
+            <div class="col-md-6">
+              <button onclick="viewModule(${id})" type="button" class="w-100 btn bg-gradient-success me-2"><i class="fas fa-file-alt"></i> View</button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="editModule(${id})" type="button" class="w-100 btn bg-gradient-info me-2"><i class="fas fa-pen"></i> Edit</button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="archiveModule(${id})" type="button" class="w-100 btn bg-gradient-danger me-2"><i class="fas fa-archive"></i> Archive</button>
+            </div>
+            <div class="col-md-6">
+              <button onclick="setModule(this)" data-id="${id}" data-module-name="${moduleName}" type="button" class="w-100 btn bg-gradient-secondary me-2"><i class="fas fa-key"></i> Settings</button>
+            </div>
+          </div>`);
     }
 
     function modalContentAdd(){
@@ -198,8 +236,8 @@
                             '<td class="text-xs"><i class="'+ row.icon +'"></i></td>' +
                             '<td class="text-xs">' + row.module_name + '</td>' +
                             '<td class="align-middle text-center text-xs">' + badgeStatus + '</td>' +
-                            '<td class="align-middle text-center text-xs">' + row.created_by + '</td>' +
-                            '<td class="align-middle text-center text-xs">' + row.updated_by + '</td>' +
+                            '<td class="align-middle text-center text-xs">' + row.createdBy +'</td>' +
+                            '<td class="align-middle text-center text-xs">' + row.updatedBy + '</td>' +
                             '<td class="align-middle text-center text-xs">' + row.created_date + '</td>' +
                             '<td class="align-middle text-center text-xs">' + row.updated_date + '</td>' +
                             '<td class="align-middle"><a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">Edit</a></td>' +
@@ -233,6 +271,67 @@
         })
     });
 
+    $(document).on('click', '#savePermission', function(){
+      const module_id = this.getAttribute('data-id');
+      const module_permission = $('#roles').val();
+      
+      if (!module_permission || module_permission.length === 0) {
+        alert('Please select at least one permission.');
+            return; 
+      }
+    
+      $('#spinner').show();
+      $.ajax({
+            url: '{{route("postModulePermission")}}',
+            method: 'POST',
+            data: {
+              module_id: module_id,
+              module_permission: module_permission,
+              _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response){
+              if(response.success === true){
+                  getModulesLive();
+                  $('#dynamicAlert').addClass('alert-success');
+                  $('#dynamicAlert').removeClass('d-none');
+                  $('#alertIcon').addClass('fa-thumbs-up');
+                  $('#alertMessage').html('<strong>Success</strong> <small>'+ response.message +'</small>');
+
+                  setTimeout(function() {
+                      $('#dynamicAlert').removeClass('alert-success');
+                      $('#dynamicAlert').addClass('d-none');
+                      $('#alertIcon').removeClass('fa-thumbs-up');
+                  }, 3000);  
+
+              } else if (response.error) {
+                alert('Request failed!');
+              }
+              $('#dynamicModal').modal('hide');
+              $('#spinner').hide();
+            },
+            error: function(xhr){
+              if (xhr.status === 422) {
+                  const errors = xhr.responseJSON.messages;
+                  let errorMessage = '<strong>Validation Errors:</strong><ul>';
+                  for (const [key, value] of Object.entries(errors)) {
+                      errorMessage += `<li class="text-sm">${value[0]}</li>`; 
+                  }
+                  errorMessage += '</ul>';
+                  $('#dynamicAlert').addClass('alert-danger');
+                  $('#dynamicAlert').removeClass('d-none');
+                  $('#alertIcon').addClass('fa-exclamation-circle');
+                  $('#alertMessage').html(errorMessage);
+              } else {
+                  $('#dynamicAlert').addClass('alert-danger');
+                  $('#dynamicAlert').removeClass('d-none');
+                  $('#alertIcon').addClass('fa-exclamation-circle');
+                  $('#alertMessage').html('<strong>Error</strong> <small>' + xhr.statusText + '</small>');
+              }
+              $('#dynamicModal').modal('hide');
+              $('#spinner').hide();
+          }
+        })
+    });
 </script>
 
 @include('components.modal')

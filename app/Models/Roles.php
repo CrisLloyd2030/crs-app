@@ -10,6 +10,8 @@ class Roles extends Model
 {
     use HasFactory;
 
+    public const SUPERADMIN = 1; 
+
     protected $table = 'roles';
     
     protected $fillable = [
@@ -24,5 +26,13 @@ class Roles extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'role_users', 'role_id', 'user_id');
+    }
+
+    public function createdBy(){
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(){
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

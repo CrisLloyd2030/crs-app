@@ -48,4 +48,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Community::class, 'community_users', 'user_id', 'community_id');
     }
+
+    public function createdBy(){
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy(){
+        return $this->belongsTo(User::class, 'updated_by');
+    }
 }

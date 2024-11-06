@@ -1,4 +1,4 @@
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-light shadow">
+<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-light shadow" id="sidenav">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href="?">
@@ -51,6 +51,7 @@
       </ul>
     </div>
 
+    @if(App\Helpers\UserHelpers::myRoleId() === App\Models\Roles::SUPERADMIN)
     <div class="sidenav-footer">
     <hr class="horizontal dark mt-0 mb-0">
       <ul class="navbar-nav">
@@ -70,7 +71,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{{route('modules')}}">
               <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="fas fa-folder-minus text-dark"></i>
+                <i class="fas fa-layer-group text-dark"></i>
               </div>
               <span class="nav-link-text ms-1">Modules</span>
             </a>
@@ -86,6 +87,7 @@
           </li>
       </ul>
     </div>
+    @endif
   </aside>
 
   <script>

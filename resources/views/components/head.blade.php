@@ -8,7 +8,7 @@
     <link rel="apple-touch-icon" sizes="76x76" href="{{ asset('assets/img/apple-icon.png') }}">
     <link rel="icon" type="image/png" href="{{ asset('assets/img/fav.png') }}">
     <title>
-        MHS | System
+        CRS | System
     </title>
     <!-- Fonts and icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -27,6 +27,11 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/js/datatables.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 <style>
@@ -84,10 +89,17 @@
     }
 
     ul.custom-indent {
-        list-style-type: none !important; 
-        padding-left: 2.5rem;  
+        list-style-type: none !important;
+        padding-left: 2.5rem;
     }
 
+    .select2-container .select2-selection--multiple {
+        padding-bottom: 10px;
+        padding-left: 10px; 
+        border-radius: 7px;
+        border: 1px solid lightgrey; 
+        font-size: 15px; 
+    }
 </style>
 
 <body class="g-sidenav-show bg-gray-100">

@@ -183,6 +183,43 @@
      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
    }
  </script>
+
+<script>
+  $(document).ready(function() {
+      const themeToggle = $('#themeMode');
+
+      // Apply the saved theme preference
+      if (localStorage.getItem('theme') === 'dark') {
+          $('body').addClass('bg-gradient-dark').removeClass('bg-gradient-white');
+          $('.card, .card-header').addClass('bg-gradient-dark');
+          $('#sidenav').addClass('bg-gradient-dark text-light').removeClass('bg-gradient-white');
+          $('#navbarBlur').addClass('bg-gradient-dark text-light');
+          themeToggle.prop('checked', true);
+      } else {
+          $('body').addClass('bg-gradient-white').removeClass('bg-gradient-dark');
+          $('.card, .card-header').removeClass('bg-gradient-dark');
+          $('#sidenav').removeClass('bg-gradient-dark').addClass('bg-gradient-white');
+          $('#navbarBlur').removeClass('bg-gradient-dark');
+        }
+
+      themeToggle.on('change', function() {
+          if ($(this).is(':checked')) {
+              $('body').addClass('bg-gradient-dark').removeClass('bg-gradient-white');
+              $('.card, .card-header').addClass('bg-gradient-dark');
+              $('#sidenav').addClass('bg-gradient-dark text-light').removeClass('bg-gradient-white');
+              $('#navbarBlur').addClass('bg-gradient-dark text-light');
+              localStorage.setItem('theme', 'dark');
+          } else {
+              $('body').addClass('bg-gradient-white').removeClass('bg-gradient-dark');
+              $('.card, .card-header').removeClass('bg-gradient-dark');
+              $('#sidenav').removeClass('bg-gradient-dark').addClass('bg-gradient-white');
+              $('#navbarBlur').removeClass('bg-gradient-dark');
+              localStorage.setItem('theme', 'light');
+          }
+      });
+  });
+</script>
+
  <!-- Github buttons -->
  <script async defer src="https://buttons.github.io/buttons.js"></script>
  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->

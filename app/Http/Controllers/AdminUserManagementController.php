@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UserHelpers;
 use App\Models\Community;
 use App\Models\Roles;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class AdminUserManagementController extends Controller
 {
@@ -15,9 +17,8 @@ class AdminUserManagementController extends Controller
     {
         $data['community'] = Community::all();
         $data['roles'] = Roles::all();
-        $data['users'] = User::with(['roles', 'communities'])->get();
+        $data['users'] = User::with(['roles', 'communities', 'createdBy', 'updatedBy'])->get();
 
-        // dd($data['users']);
         return view('pages.admin_users_management', $data);
     }
 
@@ -53,28 +54,30 @@ class AdminUserManagementController extends Controller
             'phone' => $request->input('phone'),
             'password' => Hash::make($request->input('password')),
             'status' => 1,
-            'created_by' => 1,
-            'updated_by' => 1
+            'created_by' => UserHelpers::myId(),
+            'updated_by' => UserHelpers::myId()
         ]);
 
         if ($user) {
             $user->roles()->attach($request->input('role'), [
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => UserHelpers::myId(),
+                'updated_by' => UserHelpers::myId(),
                 'created_at' => now()
             ]);
 
             $user->communities()->attach($request->input('community'), [
-                'created_by' => 1,
-                'updated_by' => 1,
+                'created_by' => UserHelpers::myId(),
+                'updated_by' => UserHelpers::myId(),
                 'created_at' => now()
             ]);
 
-            $users = User::with(['roles', 'communities'])->get();
+            $users = User::with(['roles', 'communities', 'createdBy', 'updatedBy'])->get();
 
-            foreach ($users as $row) {
+            foreach ($users as $row) {  
                 $row->created_date = Carbon::parse($row->created_at)->format('Y-m-d H:i:s');
                 $row->updated_date = Carbon::parse($row->updated_at)->format('Y-m-d H:i:s');
+                $row->createdBy = $row->createdBy->firstname .''. $row->createdBy->middlename .''. $row->createdBy->lastname; 
+                $row->updatedBy = $row->updatedBy->firstname .''. $row->updatedBy->middlename .''. $row->updatedBy->lastname; 
             }
 
             return response()->json(['success' => true, 'data' => $users, 'message' => 'User saved successfully']);

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl position-sticky blur shadow-blur mt-4 left-auto top-1 z-index-sticky" id="navbarBlur" navbar-scroll="true">
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl position-sticky bg-light mt-4 left-auto top-1 z-index-sticky" id="navbarBlur" navbar-scroll="true">
     <div class="container-fluid py-1 px-3">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -8,12 +8,17 @@
         <h6 class="font-weight-bolder mb-0">Dashboard</h6>
       </nav>
       <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+        
         <div class="ms-md-auto pe-md-3 d-flex align-items-center">
           <div class="input-group">
-            <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
-            <input type="text" class="form-control" placeholder="Type here...">
+            {{-- <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+            <input type="text" class="form-control" placeholder="Type here..."> --}}
+            <div class="form-switch">
+              <input class="form-check-input" type="checkbox" id="themeMode">
+          </div>
           </div>
         </div>
+
         <ul class="navbar-nav  justify-content-end">
           <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -102,11 +107,95 @@
               </li>
             </ul>
           </li>
-          
-          <li class="nav-item px-2 d-flex align-items-center">
-            <i class="fas fa-user-circle"></i>
+
+          <li class="nav-item dropdown px-2 d-flex align-items-center">
+            <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              @if(App\Helpers\UserHelpers::myProfile() == "")
+                <i class="fas fa-user-circle"></i>
+              @else
+                <img class="avatar avatar-xs" src="../storage/{{App\Helpers\UserHelpers::myProfile()}}" alt="">
+              @endif
+            </a>
+            <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
+              <center><small class="text-center"> <i class="fas fa-cogs"></i> Settings</small></center>
+              <hr class="horizontal dark mt-1 mb-2">
+              <li class="mb-2">
+                <a class="dropdown-item border-radius-md" href="javascript:;">
+                  <div class="d-flex py-1">
+                    <div class="my-auto">
+                      <i class="fas fa-user-circle me-3"></i>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="text-xs font-weight-normal mb-1">
+                        <span class="font-weight-normal">Profile</span>
+                      </h6>
+                      {{-- <p class="text-xs text-secondary mb-0 ">
+                        <i class="fa fa-clock me-1"></i>
+                        13 minutes ago
+                      </p> --}}
+                    </div>
+                  </div>
+                </a>
+
+                <a class="dropdown-item border-radius-md" href="javascript:;">
+                  <div class="d-flex py-1">
+                    <div class="my-auto">
+                      <i class="fas fa-user-cog me-3"></i>
+                    </div>
+                    <div class="d-flex flex-column justify-content-center">
+                      <h6 class="text-xs font-weight-normal mb-1">
+                        <span class="font-weight-normal">Account</span>
+                      </h6>
+                      {{-- <p class="text-xs text-secondary mb-0 ">
+                        <i class="fa fa-clock me-1"></i>
+                        13 minutes ago
+                      </p> --}}
+                    </div>
+                  </div>
+                </a>
+
+                <form id="logoutForm" method="POST" action="{{ route('logout') }}">
+                  @csrf
+                  <button type="submit" id="logoutButton" class="dropdown-item border-radius-md">
+                    <div class="d-flex py-1">
+                      <div class="my-auto">
+                        <i class="fas fa-sign-out-alt me-3"></i>
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-xs font-weight-normal mb-1">
+                          <span class="font-weight-normal">Logout</span>
+                        </h6>
+                      </div>
+                    </div>
+                  </button>
+                </form>
+
+              </li>
+            </ul>
           </li>
+
         </ul>
       </div>
     </div>
   </nav>
+
+  <script>
+    document.getElementById('logoutButton').addEventListener('click', function(event) {
+        event.preventDefault(); 
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logoutForm').submit(); 
+            }
+        });
+    });
+</script>
